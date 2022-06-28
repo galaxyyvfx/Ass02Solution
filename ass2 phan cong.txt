@@ -1,5 +1,0 @@
-- Minh: MemberServices + MemberForm
-- Buu: OrderServices + OrderForm
-- Trung: OrderDetailServices + LoginForm
-- Kiet: ProductServices + ProductForm
-- Toan: Main + debug + planning
