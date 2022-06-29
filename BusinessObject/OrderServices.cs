@@ -51,7 +51,7 @@ public class OrderServices : IOrderServices
         return order;
     }
 
-    public IEnumerable<object> GetOrder(DateTime startTime, DateTime endTime)
+    public IEnumerable<Order> GetOrder(DateTime startTime, DateTime endTime)
     {
         IEnumerable<Order> list = null;
         try

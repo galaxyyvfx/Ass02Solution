@@ -9,5 +9,5 @@ public interface IOrderServices
     public void DeleteOrder(Order order);
     public IEnumerable<Order> GetOrderList();
     public Order GetOrder(int id);
-    public IEnumerable<object> GetOrder(DateTime startTime, DateTime endTime);
+    public IEnumerable<Order> GetOrder(DateTime startTime, DateTime endTime);
 }
