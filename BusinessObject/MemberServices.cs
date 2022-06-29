@@ -24,7 +24,7 @@ public class MemberServices : IMemberServices
         try
         {
             using FStoreDBContext dbContext = new FStoreDBContext();
-            var mem = 
+            var mem =
                 dbContext.Members
                 .SingleOrDefault
                 (c => c.MemberId == member.MemberId);
@@ -95,7 +95,7 @@ public class MemberServices : IMemberServices
         try
         {
             using FStoreDBContext dbContext = new FStoreDBContext();
-            dbContext.Entry<Member>(member).State = 
+            dbContext.Entry<Member>(member).State =
                 Microsoft.EntityFrameworkCore.EntityState.Modified;
             dbContext.SaveChanges();
         }

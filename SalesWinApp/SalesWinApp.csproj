@@ -12,4 +12,10 @@
     <ProjectReference Include="..\BusinessObject\BusinessObject.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="frmOrderDetailInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

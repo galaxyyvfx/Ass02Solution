@@ -6,31 +6,96 @@ public class OrderServices : IOrderServices
 {
     public void AddOrder(Order order)
     {
-        throw new NotImplementedException();
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            dbContext.Orders.Add(order);
+            dbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 
     public void DeleteOrder(Order order)
     {
-        throw new NotImplementedException();
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            var ord =
+                dbContext.Orders
+                .SingleOrDefault
+                (o => o.OrderId == order.OrderId);
+            dbContext.Orders.Remove(ord);
+            dbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 
     public Order GetOrder(int id)
     {
-        throw new NotImplementedException();
+        Order order = null;
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            order = dbContext.Orders.Single(o => o.OrderId == id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return order;
     }
 
-    public IEnumerable<object> GetOrder(DateTime startTime, DateTime endTime)
+    public IEnumerable<Order> GetOrder(DateTime startTime, DateTime endTime)
     {
-        throw new NotImplementedException();
+        IEnumerable<Order> list = null;
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            list = dbContext.Orders
+                    .Where(o => o.OrderDate >= startTime)
+                    .Where(o => o.OrderDate <= endTime)
+                    .ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return list;
     }
 
     public IEnumerable<Order> GetOrderList()
     {
-        throw new NotImplementedException();
+        IEnumerable<Order> list = null;
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            list = dbContext.Orders.ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return list;
     }
 
     public void UpdateOrder(Order order)
     {
-        throw new NotImplementedException();
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            dbContext.Entry<Order>(order).State =
+                Microsoft.EntityFrameworkCore.EntityState.Modified;
+            dbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 }
