@@ -19,7 +19,7 @@ public class OrderServices : IOrderServices
         throw new NotImplementedException();
     }
 
-    public IEnumerable<object> GetOrder(DateTime startTime, DateTime endTime)
+    public IEnumerable<Order> GetOrder(DateTime startTime, DateTime endTime)
     {
         throw new NotImplementedException();
     }
