@@ -6,7 +6,6 @@ namespace SalesWinApp;
 
 public partial class frmMemberDetail : Form
 {
-    private IMemberServices memberServices = new MemberServices();
 
     public Member memberInfo { get; set; }
     public bool IsUpdate { get; set; }
@@ -30,6 +29,7 @@ public partial class frmMemberDetail : Form
 
     private void btnSave_Click(object sender, EventArgs e)
     {
+        IMemberServices memberServices = new MemberServices();
         Member member = GetMemberInfo();
         if (IsUpdate == true)
         {
@@ -44,5 +44,18 @@ public partial class frmMemberDetail : Form
     private void btnCancel_Click(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void frmMemberDetail_Load(object sender, EventArgs e)
+    {
+        if (IsUpdate == true)
+        {
+            txtMemberID.Text = memberInfo.MemberId.ToString();
+            txtCity.Text = memberInfo.City;
+            txtCompanyName.Text = memberInfo.CompanyName;
+            txtCountry.Text = memberInfo.Country;
+            txtEmail.Text = memberInfo.Email;
+            txtPassword.Text = memberInfo.Password;
+        }
     }
 }

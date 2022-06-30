@@ -8,23 +8,23 @@ public partial class frmMembers : Form
 {
     private BindingSource source;
 
-    private IMemberServices memberServices = new MemberServices();
     private void LoadMemberList(IEnumerable<Member> list)
     {
         try
         {
+            source = new BindingSource();
             source.DataSource = list;
 
             dgvMembers.DataSource = null;
             dgvMembers.DataSource = source;
 
-            if (list.Count() == 0)
+            if (list.Count() > 0)
             {
-                btnDelete.Enabled = false;
+                btnDelete.Enabled = true;
             }
             else
             {
-                btnDelete.Enabled = true;
+                btnDelete.Enabled = false;
             }
         }
         catch (Exception ex)
@@ -52,6 +52,7 @@ public partial class frmMembers : Form
 
     private void frmMembers_Load(object sender, EventArgs e)
     {
+        IMemberServices memberServices = new MemberServices();
         var list = memberServices.GetMemberList();
         LoadMemberList(list);
     }
@@ -60,8 +61,12 @@ public partial class frmMembers : Form
     {
         try
         {
+            IMemberServices memberServices = new MemberServices();
             Member member = GetCurrentMember();
             memberServices.DeleteMember(member);
+
+            var list = memberServices.GetMemberList();
+            LoadMemberList(list);
         }
         catch (Exception ex)
         {
@@ -73,11 +78,13 @@ public partial class frmMembers : Form
     {
         frmMemberDetail frmMemberDetail = new frmMemberDetail
         {
+            Text = "InsertMember",
             IsUpdate = false,
         };
         frmMemberDetail.ShowDialog();
         if (frmMemberDetail.DialogResult == DialogResult.OK)
         {
+            IMemberServices memberServices = new MemberServices();
             var list = memberServices.GetMemberList();
             LoadMemberList(list);
         }
@@ -87,12 +94,14 @@ public partial class frmMembers : Form
     {
         frmMemberDetail frmMemberDetail = new frmMemberDetail
         {
+            Text = "Update Member",
             IsUpdate = true,
             memberInfo = GetCurrentMember(),
         };
         frmMemberDetail.ShowDialog();
         if (frmMemberDetail.DialogResult == DialogResult.OK)
         {
+            IMemberServices memberServices = new MemberServices();
             var list = memberServices.GetMemberList();
             LoadMemberList(list);
         }

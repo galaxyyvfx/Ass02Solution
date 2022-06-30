@@ -143,6 +143,7 @@
             // 
             // btnSave
             // 
+            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Location = new System.Drawing.Point(87, 286);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(94, 29);
@@ -182,6 +183,7 @@
             this.Controls.Add(this.lblMemberID);
             this.Name = "frmMemberDetail";
             this.Text = "Member Details";
+            this.Load += new System.EventHandler(this.frmMemberDetail_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

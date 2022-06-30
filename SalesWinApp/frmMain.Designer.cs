@@ -44,7 +44,7 @@
             this.ordersToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(800, 28);
+            this.menuStrip2.Size = new System.Drawing.Size(1273, 28);
             this.menuStrip2.TabIndex = 1;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -73,7 +73,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1273, 676);
             this.Controls.Add(this.menuStrip2);
             this.IsMdiContainer = true;
             this.Name = "frmMain";

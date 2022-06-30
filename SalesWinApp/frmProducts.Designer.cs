@@ -176,6 +176,11 @@
             this.numUnitPriceMax.Name = "numUnitPriceMax";
             this.numUnitPriceMax.Size = new System.Drawing.Size(85, 34);
             this.numUnitPriceMax.TabIndex = 12;
+            this.numUnitPriceMax.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             // 
             // numUnitsInStockMax
             // 
@@ -184,6 +189,11 @@
             this.numUnitsInStockMax.Name = "numUnitsInStockMax";
             this.numUnitsInStockMax.Size = new System.Drawing.Size(85, 34);
             this.numUnitsInStockMax.TabIndex = 14;
+            this.numUnitsInStockMax.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             // 
             // numUnitsInStockMin
             // 

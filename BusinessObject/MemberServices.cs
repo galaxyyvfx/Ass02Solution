@@ -1,6 +1,8 @@
 ﻿using BusinessObject.Interfaces;
 using DataAccess.Models;
 
+using Microsoft.Extensions.Configuration;
+
 namespace BusinessObject;
 
 public class MemberServices : IMemberServices
@@ -72,15 +74,36 @@ public class MemberServices : IMemberServices
         Member loginMember = null;
         try
         {
-            using FStoreDBContext dbContext = new FStoreDBContext();
-            loginMember = dbContext.Members.Single(c => c.Email == email);
-            if (loginMember == null)
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppSettings.json", true, true)
+                .Build();
+            string adminEmail = config["DefaultAccounts:Email"];
+            string adminPass = config["DefaultAccounts:Password"];
+            if (adminEmail == email && adminPass == password)
             {
-                throw new Exception("User not found!");
+                loginMember = new Member
+                {
+                    MemberId = 0,
+                    Email = email,
+                    Password = password,
+                    City = "",
+                    Country = "",
+                    CompanyName = "",
+                };
             }
-            else if (loginMember.Password != password)
+            else
             {
-                throw new Exception("Incorrect password!");
+                using FStoreDBContext dbContext = new FStoreDBContext();
+                loginMember = dbContext.Members.Single(c => c.Email == email);
+                if (loginMember == null)
+                {
+                    throw new Exception("User not found!");
+                }
+                else if (loginMember.Password != password)
+                {
+                    throw new Exception("Incorrect password!");
+                }
             }
         }
         catch (Exception ex)

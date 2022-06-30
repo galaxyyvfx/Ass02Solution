@@ -45,4 +45,17 @@ public partial class frmProductDetail : Form
     {
         Close();
     }
+
+    private void frmProductDetail_Load(object sender, EventArgs e)
+    {
+        if (IsUpdate == true)
+        {
+            txtProductID.Text = productInfo.ProductId.ToString();
+            txtProductName.Text = productInfo.ProductName;
+            txtWeight.Text = productInfo.Weight;
+            numCategoryID.Value = (decimal)productInfo.CategoryId;
+            numUnitPrice.Value = (decimal)productInfo.UnitPrice;
+            numUnitsInStock.Value = (int)productInfo.UnitsInStock;
+        }
+    }
 }

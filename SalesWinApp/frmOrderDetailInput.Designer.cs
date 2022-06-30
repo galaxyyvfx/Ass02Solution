@@ -94,6 +94,7 @@
             // 
             // btnSave
             // 
+            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Location = new System.Drawing.Point(87, 254);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(94, 29);
@@ -178,6 +179,7 @@
             this.Controls.Add(this.lblOrderID);
             this.Name = "frmOrderDetailInput";
             this.Text = "Order Detail";
+            this.Load += new System.EventHandler(this.frmOrderDetailInput_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numOrderID)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numProductID)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUnitPrice)).EndInit();

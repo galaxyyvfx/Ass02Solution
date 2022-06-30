@@ -9,6 +9,7 @@ public partial class frmOrders : Form
     private IOrderDetailServices orderDetailServices = new OrderDetailServices();
     
     private BindingSource source;
+    private BindingSource sourceDetails;
     public frmOrders()
     {
         InitializeComponent();
@@ -18,18 +19,19 @@ public partial class frmOrders : Form
         try
         {
             dgvOrderDetail.DataSource = null;
+            source = new BindingSource();
             source.DataSource = list;
 
             dgvOrders.DataSource = null;
-            dgvOrders.DataSource = list;
-            
-            if (list.Count() == 0)
+            dgvOrders.DataSource = source;
+
+            if (list.Count() > 0)
             {
-                btnDeleteOrder.Enabled = false;
+                btnDeleteOrder.Enabled = true;
             }
             else
             {
-                btnDeleteOrder.Enabled = true;
+                btnDeleteOrder.Enabled = false;
             }
         }
         catch (Exception ex)
@@ -41,18 +43,19 @@ public partial class frmOrders : Form
     {
         try
         {
-            source.DataSource = list;
+            sourceDetails = new BindingSource();
+            sourceDetails.DataSource = list;
 
-            dgvOrders.DataSource = null;
-            dgvOrders.DataSource = list;
+            dgvOrderDetail.DataSource = null;
+            dgvOrderDetail.DataSource = sourceDetails;
 
-            if (list.Count() == 0)
+            if (list.Count() > 0)
             {
-                btnDeleteOrderDetails.Enabled = false;
+                btnDeleteOrderDetails.Enabled = true;
             }
             else
             {
-                btnDeleteOrderDetails.Enabled = true;
+                btnDeleteOrderDetails.Enabled = false;
             }
         }
         catch (Exception ex)
@@ -89,22 +92,31 @@ public partial class frmOrders : Form
     private void frmOrders_Load(object sender, EventArgs e)
     {
         var orderList = orderServices.GetOrderList();
+        LoadOrderList(orderList);
         dgvOrders.CellClick += DgvOrders_CellClick;
     }
 
     private void DgvOrders_CellClick(object sender, DataGridViewCellEventArgs e)
     {
-        var currentOrder = GetCurrentOrder();
-        var orderDetailList = orderDetailServices
-                        .GetOrderDetailFromOrderId(currentOrder.OrderId);
+        try
+        {
+            var currentOrder = GetCurrentOrder();
+            var orderDetailList = orderDetailServices
+                            .GetOrderDetailFromOrderId(currentOrder.OrderId);
 
-        LoadOrderDetailList(orderDetailList);
+            LoadOrderDetailList(orderDetailList);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Get current Order Details");
+        }
     }
 
     private void btnInsertOrder_Click(object sender, EventArgs e)
     {
         frmOrderInput frmOrderInput = new frmOrderInput
         {
+            Text = "Create Order",
             IsUpdate = false,
         };
         frmOrderInput.ShowDialog();
@@ -119,6 +131,7 @@ public partial class frmOrders : Form
     {
         frmOrderInput frmOrderInput = new frmOrderInput
         {
+            Text = "Update Order",
             IsUpdate = true,
             orderInfo = GetCurrentOrder(),
         };
@@ -136,6 +149,9 @@ public partial class frmOrders : Form
         {
             Order order = GetCurrentOrder();
             orderServices.DeleteOrder(order);
+
+            var list = orderServices.GetOrderList();
+            LoadOrderList(list);
         }
         catch (Exception ex)
         {
@@ -165,6 +181,7 @@ public partial class frmOrders : Form
             var currentOrder = GetCurrentOrder();
             frmOrderDetailInput frmOrderDetailInput = new frmOrderDetailInput
             {
+                Text = "Create Order Detail",
                 IsUpdate = false,
             };
             frmOrderDetailInput.ShowDialog();
@@ -190,6 +207,7 @@ public partial class frmOrders : Form
             var currentOrderDetail = GetCurrentOrderDetail();
             frmOrderDetailInput frmOrderDetailInput = new frmOrderDetailInput
             {
+                Text = "Update Order Detail",
                 IsUpdate = true,
                 orderDetailInfo = GetCurrentOrderDetail(),
             };

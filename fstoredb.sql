@@ -1,6 +1,6 @@
 USE [FStoreDB]
 GO
-DROP TABLE IF EXISTS [OrderDetails];
+DROP TABLE IF EXISTS [OrderDetail];
 DROP TABLE IF EXISTS [Order];
 DROP TABLE IF EXISTS [Member];
 DROP TABLE IF EXISTS [Product];
@@ -12,7 +12,7 @@ CREATE TABLE [Member](
 	[City] VARCHAR(15),
 	[Country] VARCHAR(15),
 	[Password] VARCHAR(30),
-)
+);
 GO
 CREATE TABLE [Order](
 	[OrderId] int IDENTITY(1, 1) PRIMARY KEY,
@@ -21,7 +21,7 @@ CREATE TABLE [Order](
 	[RequiredDate] datetime,
 	[ShippedDate] datetime,
 	[Freight] money,
-)
+);
 GO
 CREATE TABLE [Product](
 	[ProductId] int IDENTITY(1, 1) PRIMARY KEY,
@@ -30,7 +30,7 @@ CREATE TABLE [Product](
 	[Weight] VARCHAR(20),
 	[UnitPrice] money,
 	[UnitsInStock] int,
-)
+);
 GO
 CREATE TABLE [OrderDetail](
 	[OrderId] int FOREIGN KEY REFERENCES [Order]([OrderId]),

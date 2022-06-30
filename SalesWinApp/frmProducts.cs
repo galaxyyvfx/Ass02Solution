@@ -6,7 +6,6 @@ namespace SalesWinApp;
 public partial class frmProducts : Form
 {
     private BindingSource source;
-    private IProductServices productServices = new ProductServices();
     public frmProducts()
     {
         InitializeComponent();
@@ -16,18 +15,19 @@ public partial class frmProducts : Form
     {
         try
         {
+            source = new BindingSource();
             source.DataSource = list;
 
             dgvProducts.DataSource = null;
             dgvProducts.DataSource = source;
 
-            if (list.Count() == 0)
+            if (list.Count() > 0)
             {
-                btnDelete.Enabled = false;
+                btnDelete.Enabled = true;
             }
             else
             {
-                btnDelete.Enabled = true;
+                btnDelete.Enabled = false;
             }
         }
         catch (Exception ex)
@@ -50,6 +50,7 @@ public partial class frmProducts : Form
     }
     private void frmProducts_Load(object sender, EventArgs e)
     {
+        IProductServices productServices = new ProductServices();
         var list = productServices.GetProductList();
         LoadProductList(list);
     }
@@ -60,6 +61,7 @@ public partial class frmProducts : Form
         {
             try
             {
+                IProductServices productServices = new ProductServices();
                 Product searchProduct = productServices.GetProduct(
                     int.Parse(txtProductID.Text));
                 LoadProductList(new[] { searchProduct });
@@ -73,13 +75,14 @@ public partial class frmProducts : Form
         {
             try
             {
+                IProductServices productServices = new ProductServices();
                 int minPrice = (int)numUnitPriceMin.Value;
                 int maxPrice = (int)numUnitPriceMax.Value;
 
                 int minStock = (int)numUnitsInStockMin.Value;
                 int maxStock = (int)numUnitsInStockMax.Value;
 
-                var searchNames = productServices.GetProductByName(txtProductID.Text);
+                var searchNames = productServices.GetProductByName(txtProductName.Text);
                 var searchPrice = productServices.GetProductByPrice(minPrice, maxPrice);
                 var searchStock = productServices.GetProductByStock(minStock, maxStock);
                 var resultSet = from names in searchNames
@@ -109,11 +112,13 @@ public partial class frmProducts : Form
     {
         frmProductDetail frmProductDetail = new frmProductDetail
         {
+            Text = "Add Product",
             IsUpdate = false,
         };
         frmProductDetail.ShowDialog();
         if (frmProductDetail.DialogResult == DialogResult.OK)
         {
+            IProductServices productServices = new ProductServices();
             var list = productServices.GetProductList();
             LoadProductList(list);
         }
@@ -123,12 +128,14 @@ public partial class frmProducts : Form
     {
         frmProductDetail frmProductDetail = new frmProductDetail
         {
+            Text = "Update Product",
             IsUpdate = true,
             productInfo = GetCurrentProduct(),
         };
         frmProductDetail.ShowDialog();
         if (frmProductDetail.DialogResult == DialogResult.OK)
         {
+            IProductServices productServices = new ProductServices();
             var list = productServices.GetProductList();
             LoadProductList(list);
         }
@@ -138,8 +145,12 @@ public partial class frmProducts : Form
     {
         try
         {
+            IProductServices productServices = new ProductServices();
             Product product = GetCurrentProduct();
             productServices.DeleteProduct(product);
+
+            var list = productServices.GetProductList();
+            LoadProductList(list);
         }
         catch (Exception ex)
         {

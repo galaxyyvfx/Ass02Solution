@@ -14,10 +14,10 @@ public partial class frmMain : Form
 
     private void membersToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        frmMembers frmMembers = new frmMembers();
+        frmMembers frmMembers = new frmMembers(loginUser);
         frmMembers.MdiParent = this;
 
-        frmMembers.ShowDialog();
+        frmMembers.Show();
     }
 
     private void productsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -25,7 +25,7 @@ public partial class frmMain : Form
         frmProducts frmProducts = new frmProducts();
         frmProducts.MdiParent = this;
         
-        frmProducts.ShowDialog();
+        frmProducts.Show();
     }
 
     private void ordersToolStripMenuItem_Click(object sender, EventArgs e)
@@ -33,6 +33,6 @@ public partial class frmMain : Form
         frmOrders frmOrders = new frmOrders();
         frmOrders.MdiParent = this;
 
-        frmOrders.ShowDialog();
+        frmOrders.Show();
     }
 }

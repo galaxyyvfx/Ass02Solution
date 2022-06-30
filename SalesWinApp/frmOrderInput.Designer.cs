@@ -103,6 +103,7 @@
             // 
             // btnSave
             // 
+            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Location = new System.Drawing.Point(87, 286);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(94, 29);
@@ -185,6 +186,7 @@
             this.Controls.Add(this.lblOrderID);
             this.Name = "frmOrderInput";
             this.Text = "Order";
+            this.Load += new System.EventHandler(this.frmOrderInput_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numOrderID)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMemberID)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFreight)).EndInit();
