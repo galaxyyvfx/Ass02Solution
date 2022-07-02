@@ -1,38 +1,44 @@
 ﻿using BusinessObject.Interfaces;
 using DataAccess.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace SalesWinApp;
 
 public partial class frmOrders : Form
 {
+    private Member loginMember;
+    private bool IsAdmin = true;
+
     private IOrderServices orderServices = new OrderServices();
     private IOrderDetailServices orderDetailServices = new OrderDetailServices();
     
     private BindingSource source;
     private BindingSource sourceDetails;
-    public frmOrders()
+    public frmOrders(Member loginMember)
     {
         InitializeComponent();
+        this.loginMember = loginMember;
     }
     private void LoadOrderList(IEnumerable<Order> list)
     {
         try
         {
+            btnDeleteOrder.Enabled = true;
+            if (IsAdmin == false)
+            {
+                list = orderServices.GetOrderListByMemberID(loginMember.MemberId);
+                btnDeleteOrder.Enabled = false;
+            }
+            else if (list.Count() == 0)
+            {
+                btnDeleteOrder.Enabled = false;
+            }
             dgvOrderDetail.DataSource = null;
             source = new BindingSource();
             source.DataSource = list;
 
             dgvOrders.DataSource = null;
             dgvOrders.DataSource = source;
-
-            if (list.Count() > 0)
-            {
-                btnDeleteOrder.Enabled = true;
-            }
-            else
-            {
-                btnDeleteOrder.Enabled = false;
-            }
         }
         catch (Exception ex)
         {
@@ -43,20 +49,16 @@ public partial class frmOrders : Form
     {
         try
         {
+            btnDeleteOrderDetails.Enabled = true;
+            if (IsAdmin == false || list.Count() == 0)
+            {
+                btnDeleteOrderDetails.Enabled = false;
+            }
             sourceDetails = new BindingSource();
             sourceDetails.DataSource = list;
 
             dgvOrderDetail.DataSource = null;
             dgvOrderDetail.DataSource = sourceDetails;
-
-            if (list.Count() > 0)
-            {
-                btnDeleteOrderDetails.Enabled = true;
-            }
-            else
-            {
-                btnDeleteOrderDetails.Enabled = false;
-            }
         }
         catch (Exception ex)
         {
@@ -91,6 +93,23 @@ public partial class frmOrders : Form
     }
     private void frmOrders_Load(object sender, EventArgs e)
     {
+        IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppSettings.json", true, true)
+                .Build();
+        string adminEmail = config["DefaultAccounts:Email"];
+
+        if (adminEmail != loginMember.Email)
+        {
+            IsAdmin = false;
+            btnInsertOrder.Enabled = false;
+            btnUpdateOrder.Enabled = false;
+            btnDeleteOrder.Enabled = false;
+            btnInsertOrderDetail.Enabled = false;
+            btnUpdateOrderDetail.Enabled = false;
+            btnDeleteOrderDetails.Enabled = false;
+        }
+
         var orderList = orderServices.GetOrderList();
         LoadOrderList(orderList);
         dgvOrders.CellClick += DgvOrders_CellClick;
@@ -231,8 +250,16 @@ public partial class frmOrders : Form
     {
         try
         {
+            var currentOrder = GetCurrentOrder();
+
             OrderDetail orderDetail = GetCurrentOrderDetail();
             orderDetailServices.DeleteOrderDetail(orderDetail);
+
+            var list = orderDetailServices
+                    .GetOrderDetailFromOrderId(
+                    currentOrder.OrderId
+                    );
+            LoadOrderDetailList(list);
         }
         catch (Exception ex)
         {

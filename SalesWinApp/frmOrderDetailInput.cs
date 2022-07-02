@@ -67,6 +67,8 @@ public partial class frmOrderDetailInput : Form
         {
             if (IsUpdate == true)
             {
+                numOrderID.Enabled = false;
+                numProductID.Enabled = false;
                 numOrderID.Value = (decimal)orderDetailInfo.OrderId;
                 numProductID.Value = (decimal)orderDetailInfo.ProductId;
                 numUnitPrice.Value = (decimal)orderDetailInfo.UnitPrice;

@@ -84,6 +84,23 @@ public class OrderServices : IOrderServices
         return list;
     }
 
+    public IEnumerable<Order> GetOrderListByMemberID(int id)
+    {
+        IEnumerable<Order> list = null;
+        try
+        {
+            using FStoreDBContext dbContext = new FStoreDBContext();
+            list = dbContext.Orders
+                    .Where(o => o.MemberId == id)
+                    .ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        return list;
+    }
+
     public void UpdateOrder(Order order)
     {
         try

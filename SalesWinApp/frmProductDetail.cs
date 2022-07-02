@@ -18,7 +18,7 @@ public partial class frmProductDetail : Form
             ProductName = txtProductName.Text,
             Weight = txtWeight.Text,
             CategoryId = (int)numCategoryID.Value,
-            UnitPrice = (int)numUnitPrice.Value,
+            UnitPrice = numUnitPrice.Value,
             UnitsInStock = (int)numUnitsInStock.Value,
         };
         return product;
