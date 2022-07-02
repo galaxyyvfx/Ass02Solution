@@ -1,36 +1,44 @@
 ﻿using BusinessObject.Interfaces;
 using DataAccess.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace SalesWinApp;
 
 public partial class frmOrders : Form
 {
+    private Member loginMember;
+    private bool IsAdmin = true;
+
     private IOrderServices orderServices = new OrderServices();
     private IOrderDetailServices orderDetailServices = new OrderDetailServices();
     
     private BindingSource source;
-    public frmOrders()
+    private BindingSource sourceDetails;
+    public frmOrders(Member loginMember)
     {
         InitializeComponent();
+        this.loginMember = loginMember;
     }
     private void LoadOrderList(IEnumerable<Order> list)
     {
         try
         {
-            dgvOrderDetail.DataSource = null;
-            source.DataSource = list;
-
-            dgvOrders.DataSource = null;
-            dgvOrders.DataSource = list;
-            
-            if (list.Count() == 0)
+            btnDeleteOrder.Enabled = true;
+            if (IsAdmin == false)
+            {
+                list = orderServices.GetOrderListByMemberID(loginMember.MemberId);
+                btnDeleteOrder.Enabled = false;
+            }
+            else if (list.Count() == 0)
             {
                 btnDeleteOrder.Enabled = false;
             }
-            else
-            {
-                btnDeleteOrder.Enabled = true;
-            }
+            dgvOrderDetail.DataSource = null;
+            source = new BindingSource();
+            source.DataSource = list;
+
+            dgvOrders.DataSource = null;
+            dgvOrders.DataSource = source;
         }
         catch (Exception ex)
         {
@@ -41,19 +49,16 @@ public partial class frmOrders : Form
     {
         try
         {
-            source.DataSource = list;
-
-            dgvOrders.DataSource = null;
-            dgvOrders.DataSource = list;
-
-            if (list.Count() == 0)
+            btnDeleteOrderDetails.Enabled = true;
+            if (IsAdmin == false || list.Count() == 0)
             {
                 btnDeleteOrderDetails.Enabled = false;
             }
-            else
-            {
-                btnDeleteOrderDetails.Enabled = true;
-            }
+            sourceDetails = new BindingSource();
+            sourceDetails.DataSource = list;
+
+            dgvOrderDetail.DataSource = null;
+            dgvOrderDetail.DataSource = sourceDetails;
         }
         catch (Exception ex)
         {
@@ -88,23 +93,49 @@ public partial class frmOrders : Form
     }
     private void frmOrders_Load(object sender, EventArgs e)
     {
+        IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppSettings.json", true, true)
+                .Build();
+        string adminEmail = config["DefaultAccounts:Email"];
+
+        if (adminEmail != loginMember.Email)
+        {
+            IsAdmin = false;
+            btnInsertOrder.Enabled = false;
+            btnUpdateOrder.Enabled = false;
+            btnDeleteOrder.Enabled = false;
+            btnInsertOrderDetail.Enabled = false;
+            btnUpdateOrderDetail.Enabled = false;
+            btnDeleteOrderDetails.Enabled = false;
+        }
+
         var orderList = orderServices.GetOrderList();
+        LoadOrderList(orderList);
         dgvOrders.CellClick += DgvOrders_CellClick;
     }
 
     private void DgvOrders_CellClick(object sender, DataGridViewCellEventArgs e)
     {
-        var currentOrder = GetCurrentOrder();
-        var orderDetailList = orderDetailServices
-                        .GetOrderDetailFromOrderId(currentOrder.OrderId);
+        try
+        {
+            var currentOrder = GetCurrentOrder();
+            var orderDetailList = orderDetailServices
+                            .GetOrderDetailFromOrderId(currentOrder.OrderId);
 
-        LoadOrderDetailList(orderDetailList);
+            LoadOrderDetailList(orderDetailList);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Get current Order Details");
+        }
     }
 
     private void btnInsertOrder_Click(object sender, EventArgs e)
     {
         frmOrderInput frmOrderInput = new frmOrderInput
         {
+            Text = "Create Order",
             IsUpdate = false,
         };
         frmOrderInput.ShowDialog();
@@ -119,6 +150,7 @@ public partial class frmOrders : Form
     {
         frmOrderInput frmOrderInput = new frmOrderInput
         {
+            Text = "Update Order",
             IsUpdate = true,
             orderInfo = GetCurrentOrder(),
         };
@@ -136,6 +168,9 @@ public partial class frmOrders : Form
         {
             Order order = GetCurrentOrder();
             orderServices.DeleteOrder(order);
+
+            var list = orderServices.GetOrderList();
+            LoadOrderList(list);
         }
         catch (Exception ex)
         {
@@ -165,6 +200,7 @@ public partial class frmOrders : Form
             var currentOrder = GetCurrentOrder();
             frmOrderDetailInput frmOrderDetailInput = new frmOrderDetailInput
             {
+                Text = "Create Order Detail",
                 IsUpdate = false,
             };
             frmOrderDetailInput.ShowDialog();
@@ -190,6 +226,7 @@ public partial class frmOrders : Form
             var currentOrderDetail = GetCurrentOrderDetail();
             frmOrderDetailInput frmOrderDetailInput = new frmOrderDetailInput
             {
+                Text = "Update Order Detail",
                 IsUpdate = true,
                 orderDetailInfo = GetCurrentOrderDetail(),
             };
@@ -213,8 +250,16 @@ public partial class frmOrders : Form
     {
         try
         {
+            var currentOrder = GetCurrentOrder();
+
             OrderDetail orderDetail = GetCurrentOrderDetail();
             orderDetailServices.DeleteOrderDetail(orderDetail);
+
+            var list = orderDetailServices
+                    .GetOrderDetailFromOrderId(
+                    currentOrder.OrderId
+                    );
+            LoadOrderDetailList(list);
         }
         catch (Exception ex)
         {

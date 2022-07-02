@@ -18,7 +18,7 @@ public partial class frmProductDetail : Form
             ProductName = txtProductName.Text,
             Weight = txtWeight.Text,
             CategoryId = (int)numCategoryID.Value,
-            UnitPrice = (int)numUnitPrice.Value,
+            UnitPrice = numUnitPrice.Value,
             UnitsInStock = (int)numUnitsInStock.Value,
         };
         return product;
@@ -44,5 +44,18 @@ public partial class frmProductDetail : Form
     private void btnCancel_Click(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void frmProductDetail_Load(object sender, EventArgs e)
+    {
+        if (IsUpdate == true)
+        {
+            txtProductID.Text = productInfo.ProductId.ToString();
+            txtProductName.Text = productInfo.ProductName;
+            txtWeight.Text = productInfo.Weight;
+            numCategoryID.Value = (decimal)productInfo.CategoryId;
+            numUnitPrice.Value = (decimal)productInfo.UnitPrice;
+            numUnitsInStock.Value = (int)productInfo.UnitsInStock;
+        }
     }
 }

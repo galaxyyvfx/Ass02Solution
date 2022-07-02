@@ -20,7 +20,10 @@ public partial class frmLogin : Form
         try
         {
             Member loginMember = memberServices.Login(email, password);
+            this.Hide();
             frmMain frmMain = new frmMain(loginMember);
+            frmMain.ShowDialog();
+            this.Show();
         }
         catch (Exception ex)
         {

@@ -73,7 +73,7 @@ namespace DataAccess.Models
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(od => new { od.OrderId, od.ProductId });
 
                 entity.ToTable("OrderDetail");
 

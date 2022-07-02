@@ -12,14 +12,23 @@ public partial class frmOrderDetailInput : Form
     public bool IsUpdate { get; set; }
     private OrderDetail GetOrderDetailInfo()
     {
-        OrderDetail orderDetail = new OrderDetail
+        OrderDetail orderDetail = null;
+        try
         {
-            OrderId = IsUpdate == true ? (int)numOrderID.Value : 0,
-            ProductId = IsUpdate == true ? (int)numProductID.Value : 0,
-            Quantity = (int)numQuantity.Value,
-            UnitPrice = numUnitPrice.Value,
-            Discount = (float)numDiscount.Value,
-        };
+            orderDetail = new OrderDetail
+            {
+                OrderId = (int)numOrderID.Value,
+                ProductId = (int)numProductID.Value,
+                Quantity = (int)numQuantity.Value,
+                UnitPrice = numUnitPrice.Value,
+                Discount = (float)numDiscount.Value,
+            };
+            
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, this.Text);
+        }
         return orderDetail;
     }
     public frmOrderDetailInput()
@@ -29,19 +38,47 @@ public partial class frmOrderDetailInput : Form
 
     private void btnSave_Click(object sender, EventArgs e)
     {
-        OrderDetail orderDetail = GetOrderDetailInfo();
-        if (IsUpdate == true)
+        try
         {
-            orderDetailServices.UpdateOrderDetail(orderDetail);
+            OrderDetail orderDetail = GetOrderDetailInfo();
+            if (IsUpdate == true)
+            {
+                orderDetailServices.UpdateOrderDetail(orderDetail);
+            }
+            else
+            {
+                orderDetailServices.AddOrderDetail(orderDetail);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            orderServices.AddOrder(order);
+            MessageBox.Show(ex.Message, this.Text);
         }
     }
 
     private void btnCancel_Click(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void frmOrderDetailInput_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (IsUpdate == true)
+            {
+                numOrderID.Enabled = false;
+                numProductID.Enabled = false;
+                numOrderID.Value = (decimal)orderDetailInfo.OrderId;
+                numProductID.Value = (decimal)orderDetailInfo.ProductId;
+                numUnitPrice.Value = (decimal)orderDetailInfo.UnitPrice;
+                numQuantity.Value = (decimal)orderDetailInfo.Quantity;
+                numDiscount.Value = (decimal)orderDetailInfo.Discount;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Load OrderDetail Input");
+        }
     }
 }

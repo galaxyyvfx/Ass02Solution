@@ -50,6 +50,7 @@
             this.dtpStartDate.Name = "dtpStartDate";
             this.dtpStartDate.Size = new System.Drawing.Size(250, 27);
             this.dtpStartDate.TabIndex = 0;
+            this.dtpStartDate.Value = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             // 
             // lblPeriod
             // 

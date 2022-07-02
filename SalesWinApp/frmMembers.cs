@@ -1,31 +1,35 @@
 ﻿using BusinessObject;
 using BusinessObject.Interfaces;
 using DataAccess.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace SalesWinApp;
 
 public partial class frmMembers : Form
 {
+    private Member loginMember;
+    private bool IsAdmin = true;
     private BindingSource source;
 
-    private IMemberServices memberServices = new MemberServices();
     private void LoadMemberList(IEnumerable<Member> list)
     {
         try
         {
+            btnDelete.Enabled = true;
+            if (IsAdmin == false)
+            {
+                list = new Member[] { loginMember };
+                btnDelete.Enabled = false;
+            }
+            else if (list.Count() == 0)
+            {
+                btnDelete.Enabled = false;
+            }
+            source = new BindingSource();
             source.DataSource = list;
 
             dgvMembers.DataSource = null;
             dgvMembers.DataSource = source;
-
-            if (list.Count() == 0)
-            {
-                btnDelete.Enabled = false;
-            }
-            else
-            {
-                btnDelete.Enabled = true;
-            }
         }
         catch (Exception ex)
         {
@@ -48,10 +52,25 @@ public partial class frmMembers : Form
     public frmMembers(Member loginMember)
     {
         InitializeComponent();
+
+        this.loginMember = loginMember;
     }
 
     private void frmMembers_Load(object sender, EventArgs e)
     {
+        IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppSettings.json", true, true)
+                .Build();
+        string adminEmail = config["DefaultAccounts:Email"];
+
+        if (adminEmail != loginMember.Email)
+        {
+            btnInsert.Enabled = false;
+            btnDelete.Enabled = false;
+            IsAdmin = false;
+        }
+        IMemberServices memberServices = new MemberServices();
         var list = memberServices.GetMemberList();
         LoadMemberList(list);
     }
@@ -60,8 +79,12 @@ public partial class frmMembers : Form
     {
         try
         {
+            IMemberServices memberServices = new MemberServices();
             Member member = GetCurrentMember();
             memberServices.DeleteMember(member);
+
+            var list = memberServices.GetMemberList();
+            LoadMemberList(list);
         }
         catch (Exception ex)
         {
@@ -73,11 +96,13 @@ public partial class frmMembers : Form
     {
         frmMemberDetail frmMemberDetail = new frmMemberDetail
         {
+            Text = "InsertMember",
             IsUpdate = false,
         };
         frmMemberDetail.ShowDialog();
         if (frmMemberDetail.DialogResult == DialogResult.OK)
         {
+            IMemberServices memberServices = new MemberServices();
             var list = memberServices.GetMemberList();
             LoadMemberList(list);
         }
@@ -87,12 +112,14 @@ public partial class frmMembers : Form
     {
         frmMemberDetail frmMemberDetail = new frmMemberDetail
         {
+            Text = "Update Member",
             IsUpdate = true,
             memberInfo = GetCurrentMember(),
         };
         frmMemberDetail.ShowDialog();
         if (frmMemberDetail.DialogResult == DialogResult.OK)
         {
+            IMemberServices memberServices = new MemberServices();
             var list = memberServices.GetMemberList();
             LoadMemberList(list);
         }

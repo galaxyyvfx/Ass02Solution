@@ -125,6 +125,7 @@
             // 
             // btnSave
             // 
+            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Location = new System.Drawing.Point(87, 286);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(94, 29);
@@ -164,7 +165,7 @@
             this.numCategoryID.Size = new System.Drawing.Size(231, 27);
             this.numCategoryID.TabIndex = 16;
             // 
-            // frmMemberDetail
+            // frmProductDetail
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -183,8 +184,9 @@
             this.Controls.Add(this.lblProductName);
             this.Controls.Add(this.lblCategoryID);
             this.Controls.Add(this.lblProductID);
-            this.Name = "frmMemberDetail";
+            this.Name = "frmProductDetail";
             this.Text = "Product Details";
+            this.Load += new System.EventHandler(this.frmProductDetail_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numUnitPrice)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUnitsInStock)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCategoryID)).EndInit();

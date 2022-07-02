@@ -12,15 +12,24 @@ public partial class frmOrderInput : Form
     public bool IsUpdate { get; set; }
     private Order GetOrderInfo()
     {
-        Order order = new Order
+        Order order = null;
+        try
         {
-            OrderId = IsUpdate==true? (int)numOrderID.Value : 0,
-            MemberId = (int)numMemberID.Value,
-            Freight = (int)numFreight.Value,
-            OrderDate = dtpOrderDate.Value,
-            RequiredDate = dtpRequiredDate.Value,
-            ShippedDate = dtpShippedDate.Value,
-        };
+            order = new Order
+            {
+                OrderId = IsUpdate == true ? (int)numOrderID.Value : 0,
+                MemberId = (int)numMemberID.Value,
+                Freight = (int)numFreight.Value,
+                OrderDate = dtpOrderDate.Value,
+                RequiredDate = dtpRequiredDate.Value,
+                ShippedDate = dtpShippedDate.Value,
+            };
+            return order;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Get Order");
+        }
         return order;
     }
     public frmOrderInput()
@@ -31,18 +40,45 @@ public partial class frmOrderInput : Form
     private void btnSave_Click(object sender, EventArgs e)
     {
         Order order = GetOrderInfo();
-        if (IsUpdate == true)
+        try
         {
-            orderServices.UpdateOrder(order);
+            if (IsUpdate == true)
+            {
+                orderServices.UpdateOrder(order);
+            }
+            else
+            {
+                orderServices.AddOrder(order);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            orderServices.AddOrder(order);
+            MessageBox.Show(ex.Message, this.Text);
         }
     }
 
     private void btnCancel_Click(object sender, EventArgs e)
     {
         Close();
+    }
+
+    private void frmOrderInput_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (IsUpdate == true)
+            {
+                numOrderID.Value = orderInfo.OrderId;
+                numMemberID.Value = (decimal)orderInfo.MemberId;
+                dtpOrderDate.Value = (DateTime)orderInfo.OrderDate;
+                dtpRequiredDate.Value = (DateTime)orderInfo.RequiredDate;
+                dtpShippedDate.Value = (DateTime)orderInfo.ShippedDate;
+                numFreight.Value = (decimal)orderInfo.Freight;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Load Order Input");
+        }
     }
 }

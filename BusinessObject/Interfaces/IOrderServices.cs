@@ -10,4 +10,5 @@ public interface IOrderServices
     public IEnumerable<Order> GetOrderList();
     public Order GetOrder(int id);
     public IEnumerable<Order> GetOrder(DateTime startTime, DateTime endTime);
+    public IEnumerable<Order> GetOrderListByMemberID(int id);
 }
